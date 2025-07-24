@@ -1,0 +1,477 @@
+{
+  "name": "Activación cuentas",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT email, \"role\" FROM \"user\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        144
+      ],
+      "id": "80ea5ce9-60a2-4c84-9f11-25c39ad9c826",
+      "name": "Obtener usuarios",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98c49bb-80f7-440c-8eec-607deaaad851",
+              "leftValue": "={{ $json.role }}",
+              "rightValue": "pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        576,
+        144
+      ],
+      "id": "30bf68e8-86ba-434f-8906-3743a97b2c88",
+      "name": "Tomar los pendientes"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "136ZGgy4JzT9hbyGejYqxVXIJJUrtl8qCzE5TLh41ygA",
+          "mode": "list",
+          "cachedResultName": "MAILS - PIA",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/136ZGgy4JzT9hbyGejYqxVXIJJUrtl8qCzE5TLh41ygA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/136ZGgy4JzT9hbyGejYqxVXIJJUrtl8qCzE5TLh41ygA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        576,
+        352
+      ],
+      "id": "0f926d01-b83f-42d5-ac53-e19a97edcfc6",
+      "name": "Tomar usuarios autorizados",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "swHU4Yi7feU2dcby",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        144
+      ],
+      "id": "d6830492-2c7b-4c0c-9805-c70e5bd6fd76",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8f3decc2-2185-4d9a-ba38-be20cd0b8ca0",
+              "name": "Correo electrónico",
+              "value": "={{ $json['Correo electrónico'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        352
+      ],
+      "id": "3a51df93-47a9-429c-b3f4-93bcb3f85974",
+      "name": "Tomar mail2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d40da2af-fe64-423c-9f79-5fe4a3195cf8",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        144
+      ],
+      "id": "34e4fc7c-6ae6-4623-8023-23e9893ef9c9",
+      "name": "Tomar mail1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "email",
+              "field2": "Correo electrónico"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        976,
+        224
+      ],
+      "id": "087c6897-cf97-4db7-b7e1-6214c630c989",
+      "name": "Tomar coincidencias"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user",
+          "mode": "list",
+          "cachedResultName": "user"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "role": "user",
+            "email": "={{ $json['Correo electrónico'] }}"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_image_url",
+              "displayName": "profile_image_url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "api_key",
+              "displayName": "api_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_active_at",
+              "displayName": "last_active_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "settings",
+              "displayName": "settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "info",
+              "displayName": "info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oauth_sub",
+              "displayName": "oauth_sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1184,
+        224
+      ],
+      "id": "907de9e6-cfb1-47f5-817a-ce8001c0b42a",
+      "name": "Otorgar rol de \"user\"",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Tomar coincidencias').item.json.email }}",
+        "subject": "Aviso",
+        "emailType": "text",
+        "message": "=¡Tu cuenta de UNAHUR GPT ha sido activada con éxito!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1392,
+        224
+      ],
+      "id": "74c90089-1c8e-4768-8776-b0af9675e36c",
+      "name": "Enviar aviso de activación",
+      "webhookId": "b6a39e3f-9cba-4799-9441-419651bb28ac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lKlPIMMrzp7wWQzS",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Obtener usuarios": {
+      "main": [
+        [
+          {
+            "node": "Tomar los pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar los pendientes": {
+      "main": [
+        [
+          {
+            "node": "Tomar mail1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tomar usuarios autorizados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar usuarios autorizados": {
+      "main": [
+        [
+          {
+            "node": "Tomar mail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Obtener usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar mail2": {
+      "main": [
+        [
+          {
+            "node": "Tomar coincidencias",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tomar mail1": {
+      "main": [
+        [
+          {
+            "node": "Tomar coincidencias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar coincidencias": {
+      "main": [
+        [
+          {
+            "node": "Otorgar rol de \"user\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Otorgar rol de \"user\"": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso de activación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "858da9bb-8320-47a6-a5a8-69001e17f2ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "530064e1f9e74f7f94f7149336eef00a085cd09d50aaa6995926e2cc912025d3"
+  },
+  "id": "8ytHnYacmB5hLfyq",
+  "tags": []
+}
