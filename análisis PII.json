@@ -1,0 +1,1206 @@
+{
+  "name": "análisis PII",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 2 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -544,
+        304
+      ],
+      "id": "52d38531-acee-421d-9c85-2abda800f069",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.content }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "DNI",
+              "description": "=DNI con formato regex \\b\\d{7,8}\\b o similar"
+            }
+          ]
+        },
+        "options": {
+          "fallback": "discard",
+          "enableAutoFixing": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -1712,
+        928
+      ],
+      "id": "0c55f579-e990-4679-981d-13742f1f82ff",
+      "name": "Text Classifier",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:3b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1584,
+        1088
+      ],
+      "id": "bf772efd-67b4-4c6c-b425-eb98a4b7a97e",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "QbYOS0Un3GUxo4e4",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Actualmente detecta\n* Email\n* DNI\n* Tarjeta\n* CBU/CVU",
+        "height": 144,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "e6dfe77a-f2f2-4224-801e-1d5a7f525ff4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "00fec423-1c52-42b4-be09-a94b86b3ba60",
+              "leftValue": "={{ $json.models[0] }}",
+              "rightValue": "llama3.2:3b",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        208
+      ],
+      "id": "14b027c3-8736-4500-a20f-af31e6b5ef33",
+      "name": "¿El modelo es Local?"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user",
+          "mode": "list",
+          "cachedResultName": "user"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "role": "pending",
+            "id": "={{ $json.user_id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_image_url",
+              "displayName": "profile_image_url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "api_key",
+              "displayName": "api_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_active_at",
+              "displayName": "last_active_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "settings",
+              "displayName": "settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "info",
+              "displayName": "info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oauth_sub",
+              "displayName": "oauth_sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1840,
+        240
+      ],
+      "id": "9ba03216-835c-4e24-9762-938c7d471d52",
+      "name": "Quitar rol de \"user\"",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Advertencia",
+        "emailType": "text",
+        "message": "=¡No debes compartir información sensible con modelos de lenguaje, más teniendo en cuenta que no son locales!\nTe penalizaremos quitándote el accesoa UNAHUR GPT",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1840,
+        416
+      ],
+      "id": "2860aeba-6cd4-4a7e-a041-bc474cbaaf6f",
+      "name": "Enviar advertencia Hard",
+      "webhookId": "b6a39e3f-9cba-4799-9441-419651bb28ac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lKlPIMMrzp7wWQzS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Advertencia",
+        "emailType": "text",
+        "message": "=¡El modelo de lenguaje que estas usando es local y los datos no se comparten en ningún lado, sin embargo recuerda no compartir datos personales!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        80
+      ],
+      "id": "b373768c-7bbe-4f68-9179-2c3e636a737f",
+      "name": "Enviar advertencia Light",
+      "webhookId": "b6a39e3f-9cba-4799-9441-419651bb28ac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lKlPIMMrzp7wWQzS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT EXISTS (\n  SELECT FROM information_schema.tables \n  WHERE table_schema = 'public' \n    AND table_name = 'analyzed_messages'\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        480
+      ],
+      "id": "477ecb81-b387-4aa0-ab3e-124606104fcf",
+      "name": "Consultar si existe la tabla",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let results = [];\n\nfor (const item of items) {\n  const email = item.json.email;\n  const chatId = item.json.id;\n  const userId = item.json.user_id;\n  const messagesObj = item.json.chat.history.messages;\n  const messagesArr = Object.values(messagesObj);\n  const userMessages = messagesArr.filter(m => m.role === \"user\");\n\n  for (const m of userMessages) {\n    results.push({\n      json: {\n        message_id: m.id,\n        user_id: userId,\n        email: email,\n        chat_id: chatId,\n        content: m.content,\n        models: m.models ?? []\n      }\n    });\n  }\n}\n\nreturn results;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        304
+      ],
+      "id": "7c09c7c8-9265-4320-9ab4-e369f76a4e4d",
+      "name": "Obtener valores necesarios"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "message_id",
+              "field2": "message_id"
+            }
+          ]
+        },
+        "resolve": "preferInput1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        304,
+        256
+      ],
+      "id": "a31d3cf9-f516-4367-a80c-874748009f24",
+      "name": "Ver si el dato ya fue analizado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7326bccc-0bc7-4464-90cf-57a9a0e1c53c",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        480
+      ],
+      "id": "84a1bc3f-01dd-4df1-8369-e6206fef9074",
+      "name": "¿Existe la tabla \"analyzed_messages\"?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE analyzed_messages (\n  message_id UUID PRIMARY KEY,\n  user_id UUID NOT NULL,\n  chat_id UUID NOT NULL,\n  email TEXT NOT NULL,\n  content TEXT NOT NULL,\n  models TEXT[] NOT NULL,\n  flagged BOOLEAN NOT NULL\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        304,
+        480
+      ],
+      "id": "0335ee42-0c14-41dd-9e7b-0d4ece5246e7",
+      "name": "Crear tabla analyzed_messages",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM analyzed_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        656
+      ],
+      "id": "72a40b81-56bc-4924-9100-c180880e1125",
+      "name": "Obtener analyzed_messages",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, COUNT(*) AS flagged_count\nFROM analyzed_messages\nWHERE flagged = true\nGROUP BY user_id;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1392,
+        336
+      ],
+      "id": "0a63aa68-15c5-4067-9f2e-e2c41bbd517e",
+      "name": "Contar cantidad de mensajes flaggeados",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "analyzed_messages",
+          "mode": "list",
+          "cachedResultName": "analyzed_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $json.message_id }}",
+            "user_id": "={{ $json.user_id }}",
+            "email": "={{ $json.email }}",
+            "chat_id": "={{ $json.chat_id }}",
+            "content": "={{ $json.content }}",
+            "models": "={{ $json.models }}",
+            "flagged": true
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "models",
+              "displayName": "models",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "flagged",
+              "displayName": "flagged",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        208
+      ],
+      "id": "db0b8efe-a81c-4bbe-8019-9b0f24ff865e",
+      "name": "insert flagged TRUE",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "analyzed_messages",
+          "mode": "list",
+          "cachedResultName": "analyzed_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $json.message_id }}",
+            "user_id": "={{ $json.user_id }}",
+            "email": "={{ $json.email }}",
+            "chat_id": "={{ $json.chat_id }}",
+            "content": "={{ $json.content }}",
+            "models": "={{ $json.models }}",
+            "flagged": false
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "models",
+              "displayName": "models",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "flagged",
+              "displayName": "flagged",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        400
+      ],
+      "id": "42e582e6-96db-4b2e-8682-62f4499372ef",
+      "name": "insert flagged FALSE",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Advertencia",
+        "emailType": "text",
+        "message": "=¡No debes compartir información sensible con modelos de lenguaje, más teniendo en cuenta que no son locales!\nTe penalizaremos quitándote el accesoa UNAHUR GPT",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2064,
+        240
+      ],
+      "id": "de803ba3-9c5a-4d3f-98a5-ec6c161af0f8",
+      "name": "Enviar aviso de \"Baneo\"",
+      "webhookId": "b6a39e3f-9cba-4799-9441-419651bb28ac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lKlPIMMrzp7wWQzS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "264c45f5-a457-45fa-bf1f-f13d07563acf",
+              "name": "message_id",
+              "value": "={{ $json.message_id }}",
+              "type": "string"
+            },
+            {
+              "id": "7c38b0ff-8456-4a37-95a1-b0c3c28a30cf",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d167caa4-5b5a-462e-8052-ab03f9f72c99",
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c0cd9004-72b5-44e2-9cb3-0f64ff5ec389",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "e81fc9e3-2b13-4cdc-8b2b-26ff2dccc95b",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "589379b1-32a8-4ed9-8390-f428e86fd9f1",
+              "name": "models",
+              "value": "={{ $json.models }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        656
+      ],
+      "id": "fe2694b9-4d74-4011-9005-ba6391c9859f",
+      "name": "Quitar columna flagged"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4ee4ddc5-590e-40f1-819c-606178365f7e",
+              "leftValue": "={{ $json.flagged_count }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        336
+      ],
+      "id": "96550a6f-0df8-42c5-a20e-dc1409fa6e49",
+      "name": "¿Tiene 2 o más advertencias?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f9527d86-b9ee-47bf-9978-f3a9dd9f2819",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "9f019306-1db7-4fcb-a6be-911c6096a59a",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "\\b\\d{7,8}\\b",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "76952aa2-0456-46a0-93b7-606f9df273f1",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "\\b(?:4\\d{3}|5[1-5]\\d{2})[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}\\b",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "232c0868-90c8-4e7b-ae09-fe246e60b637",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "\\b\\d{22}\\b",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        304
+      ],
+      "id": "0a6a8abf-37c8-475b-9bf4-9804a721ddcf",
+      "name": "Filtro Regex"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat",
+          "mode": "list",
+          "cachedResultName": "chat"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        336
+      ],
+      "id": "ecd1e81b-54a0-4a72-8953-36a293e5dd0a",
+      "name": "Eliminar chat del usuario",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id FROM model",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        112
+      ],
+      "id": "4be64eb9-4784-4a64-9251-2e049e1025e8",
+      "name": "Obtener modelos",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT c.id, c.chat, u.email, u.id AS user_id\nFROM chat c\nJOIN \"user\" u ON c.user_id = u.id\nORDER BY c.updated_at DESC\nLIMIT 10;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        304
+      ],
+      "id": "2485ea8d-9eba-480d-b1ac-0ea09bf97855",
+      "name": "Tomar los 10 chats más recientes",
+      "credentials": {
+        "postgres": {
+          "id": "DiW4scWEUXBtvX3n",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Obtener modelos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tomar los 10 chats más recientes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Consultar si existe la tabla",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Obtener analyzed_messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        []
+      ]
+    },
+    "¿El modelo es Local?": {
+      "main": [
+        [
+          {
+            "node": "Enviar advertencia Light",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Eliminar chat del usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar advertencia Hard": {
+      "main": [
+        []
+      ]
+    },
+    "Consultar si existe la tabla": {
+      "main": [
+        [
+          {
+            "node": "¿Existe la tabla \"analyzed_messages\"?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener valores necesarios": {
+      "main": [
+        [
+          {
+            "node": "Ver si el dato ya fue analizado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ver si el dato ya fue analizado": {
+      "main": [
+        [
+          {
+            "node": "Filtro Regex",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        []
+      ]
+    },
+    "¿Existe la tabla \"analyzed_messages\"?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Crear tabla analyzed_messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear tabla analyzed_messages": {
+      "main": [
+        []
+      ]
+    },
+    "Obtener analyzed_messages": {
+      "main": [
+        [
+          {
+            "node": "Quitar columna flagged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert flagged TRUE": {
+      "main": [
+        [
+          {
+            "node": "¿El modelo es Local?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contar cantidad de mensajes flaggeados": {
+      "main": [
+        [
+          {
+            "node": "¿Tiene 2 o más advertencias?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quitar columna flagged": {
+      "main": [
+        [
+          {
+            "node": "Ver si el dato ya fue analizado",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "¿Tiene 2 o más advertencias?": {
+      "main": [
+        [
+          {
+            "node": "Quitar rol de \"user\"",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar advertencia Hard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Regex": {
+      "main": [
+        [
+          {
+            "node": "insert flagged TRUE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "insert flagged FALSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eliminar chat del usuario": {
+      "main": [
+        [
+          {
+            "node": "Contar cantidad de mensajes flaggeados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar los 10 chats más recientes": {
+      "main": [
+        [
+          {
+            "node": "Obtener valores necesarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quitar rol de \"user\"": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso de \"Baneo\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f3cc4422-37ae-43c7-9d80-d12340fb025d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "530064e1f9e74f7f94f7149336eef00a085cd09d50aaa6995926e2cc912025d3"
+  },
+  "id": "l0rVWV5lnDKd10Bk",
+  "tags": []
+}
