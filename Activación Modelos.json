@@ -1,0 +1,235 @@
+{
+  "name": "Activación Modelos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -896,
+        96
+      ],
+      "id": "45ba8bee-93d3-4ffb-b867-59ec20772026",
+      "name": "Cada 15 minutos"
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/ps",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -672,
+        96
+      ],
+      "id": "51c02c71-f808-4bbb-bb0f-808e0031430c",
+      "name": "Obtener modelos que están corriendo"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.model }}",
+                    "rightValue": "deepseek-r1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "94d39182-01ae-4ba7-98dd-917ea5323538"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Deepseek-r1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d68ee530-daaf-4b2e-8f2d-22fd3ec5aed4",
+                    "leftValue": "={{ $json.model }}",
+                    "rightValue": "llama3.2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Llama 3.2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -272,
+        96
+      ],
+      "id": "0aa1fb75-8715-4fbd-96e1-83c6616b8fef",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "let results = [];\n\nconst modelsData = items[0].json.models;\n\nfor (const item of modelsData) {\n    results.push({\n        json: {\n            model: item.model,\n        }\n    });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        96
+      ],
+      "id": "69a1a2ce-f40e-4704-9904-33eddfee1ff1",
+      "name": "Tomar nombres"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.model }}\",\n  \"prompt\": \"Hola\",\n  \"stream\": false,\n  \"keep_alive\": \"20m\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "04128ba8-6a7d-46b4-9aba-2ee3fc91e657",
+      "name": "Activar Deepseek por 20m"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.model }}\",\n  \"prompt\": \"Hola\",\n  \"stream\": false,\n  \"keep_alive\": \"20m\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        192
+      ],
+      "id": "3f669758-c651-4a00-95f6-02e0b8785a85",
+      "name": "Activar Llama por 20m"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.model }}\",\n  \"prompt\": \"Hola\",\n  \"stream\": false,\n  \"keep_alive\": \"5s\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -176
+      ],
+      "id": "15a95f7c-8574-4619-bfd2-ab7b25f94b5f",
+      "name": "Desactivar Deepseek"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cada 15 minutos": {
+      "main": [
+        [
+          {
+            "node": "Obtener modelos que están corriendo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener modelos que están corriendo": {
+      "main": [
+        [
+          {
+            "node": "Tomar nombres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Activar Deepseek por 20m",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Activar Llama por 20m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar nombres": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "56a2ca86-19a1-4e05-9e01-477584c68d4c",
+  "meta": {
+    "instanceId": "31d2d47e2510cbfd080db5ccade81dab10ff2771698f42e9e0bf6020f3b06c79"
+  },
+  "id": "8lrQHCP6NVZIBqr8",
+  "tags": []
+}

@@ -1,0 +1,902 @@
+{
+  "name": "Activación Cuentas",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user",
+          "mode": "list",
+          "cachedResultName": "user"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "role": "pending",
+            "email": "=alejandro.pujol@unahur.edu.ar"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_image_url",
+              "displayName": "profile_image_url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "api_key",
+              "displayName": "api_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_active_at",
+              "displayName": "last_active_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "settings",
+              "displayName": "settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "info",
+              "displayName": "info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oauth_sub",
+              "displayName": "oauth_sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "658ca359-75f8-4113-91aa-a593a5b06b6e",
+      "name": "Otorgar rol de \"pending\"",
+      "credentials": {
+        "postgres": {
+          "id": "nYsoHS1MEAijIPSq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw",
+          "mode": "list",
+          "cachedResultName": "Cuentas Autorizadas UNAHUR GPT",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1771157796,
+          "mode": "list",
+          "cachedResultName": "correos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw/edit#gid=1771157796"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $json.email }}",
+            "Verificado": "FALSE"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Verificado",
+              "displayName": "Verificado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        800,
+        112
+      ],
+      "id": "5fecaa19-4976-40bd-a622-0cbebaa66302",
+      "name": "Agregar a Cuentas Autorizadas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "o5VgF0EQuDbU61RC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "email",
+              "field2": "email"
+            }
+          ]
+        },
+        "resolve": "preferInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        256
+      ],
+      "id": "c816e9ce-48c4-4e6e-b56c-de77b6ef65f7",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user",
+          "mode": "list",
+          "cachedResultName": "user"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "role": "pending",
+            "email": "={{ $json.email }}"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_image_url",
+              "displayName": "profile_image_url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "api_key",
+              "displayName": "api_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_active_at",
+              "displayName": "last_active_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "settings",
+              "displayName": "settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "info",
+              "displayName": "info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oauth_sub",
+              "displayName": "oauth_sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1056,
+        368
+      ],
+      "id": "b05758a2-f701-468d-8d96-7839c0e9040e",
+      "name": "Otorgar rol \"pending\"",
+      "credentials": {
+        "postgres": {
+          "id": "nYsoHS1MEAijIPSq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user",
+          "mode": "list",
+          "cachedResultName": "user"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "role": "user",
+            "email": "={{ $json.email }}"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_image_url",
+              "displayName": "profile_image_url",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "api_key",
+              "displayName": "api_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_active_at",
+              "displayName": "last_active_at",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "settings",
+              "displayName": "settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "info",
+              "displayName": "info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oauth_sub",
+              "displayName": "oauth_sub",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "48638e1d-9cad-4824-b38a-efceeb8fef2f",
+      "name": "Otorgar rol \"user\"",
+      "credentials": {
+        "postgres": {
+          "id": "nYsoHS1MEAijIPSq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d40da2af-fe64-423c-9f79-5fe4a3195cf8",
+              "name": "email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "134f83af-e738-4042-83d1-8322003cc2b0",
+              "name": "verificado",
+              "value": "={{ $json.Verificado }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        384
+      ],
+      "id": "5eee6ddf-9eb4-49b0-8bd3-6e2634d4f3af",
+      "name": "Tomar mail y verificado"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT email, \"role\" FROM \"user\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        208
+      ],
+      "id": "8266858b-2ecf-4e89-9024-41756d5f4693",
+      "name": "Obtener usuarios",
+      "credentials": {
+        "postgres": {
+          "id": "nYsoHS1MEAijIPSq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw",
+          "mode": "list",
+          "cachedResultName": "Cuentas Autorizadas UNAHUR GPT",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1771157796,
+          "mode": "list",
+          "cachedResultName": "correos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/129bqdG7UHN9u7UYpUyVtcem5OdlJLNs7sBsXEkNPchw/edit#gid=1771157796"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        0,
+        384
+      ],
+      "id": "9c42b38c-5f43-4a3b-a967-6904b536a74b",
+      "name": "Tomar usuarios",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "o5VgF0EQuDbU61RC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bd77a7a4-fdf4-41ee-9f9e-4e6730ac6fa8",
+              "leftValue": "={{ $json.verificado }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        288
+      ],
+      "id": "07082cf5-47de-4eb5-a10b-03427c606e87",
+      "name": "If verificado"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Aviso",
+        "emailType": "text",
+        "message": "=¡Tu cuenta de UNAHUR GPT ha sido activada con éxito!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "25bb0c1d-dcf0-4875-82ec-b7395fc0af21",
+      "name": "Enviar aviso de activación",
+      "webhookId": "b6a39e3f-9cba-4799-9441-419651bb28ac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qEhh8kerMNAtATU6",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        304
+      ],
+      "id": "20da1efe-c98e-4ddc-b586-67f4c67c3710",
+      "name": "Cada 5 minutos"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98c49bb-80f7-440c-8eec-607deaaad851",
+              "leftValue": "={{ $json.role }}",
+              "rightValue": "admin",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        208
+      ],
+      "id": "8f64c993-62fa-41c7-8eae-c15e98841240",
+      "name": "Obviar a los admin"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Compare Datasets": {
+      "main": [
+        [
+          {
+            "node": "Agregar a Cuentas Autorizadas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "If verificado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If verificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar mail y verificado": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Obtener usuarios": {
+      "main": [
+        [
+          {
+            "node": "Obviar a los admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar usuarios": {
+      "main": [
+        [
+          {
+            "node": "Tomar mail y verificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If verificado": {
+      "main": [
+        [
+          {
+            "node": "Otorgar rol \"user\"",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Otorgar rol \"pending\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cada 5 minutos": {
+      "main": [
+        [
+          {
+            "node": "Obtener usuarios",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tomar usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obviar a los admin": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "12e586d9-a73c-44b4-9b93-d75bd8de8fe9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31d2d47e2510cbfd080db5ccade81dab10ff2771698f42e9e0bf6020f3b06c79"
+  },
+  "id": "HuuKmTonzGlq4g1Z",
+  "tags": []
+}
