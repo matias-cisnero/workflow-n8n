@@ -1,0 +1,309 @@
+{
+  "name": "Verificar Updates Modelos",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c32f3e3a-e40a-4f1c-9ac2-6b7fddf3cc24",
+              "leftValue": "={{ $json.ollama_server_digest }}",
+              "rightValue": "={{ $json.ollama_local_digest }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        0
+      ],
+      "id": "9053de3e-b6c2-48bc-8e71-cdf50adfbb3b",
+      "name": "¿Coinciden los digest?"
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/tags",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        0
+      ],
+      "id": "b8cbd503-e2fb-404d-995b-3bbcc25f7f4e",
+      "name": "Tomar modelos Ollama"
+    },
+    {
+      "parameters": {
+        "method": "HEAD",
+        "url": "=https://registry.ollama.ai/v2/library/{{ $json.name.split(':')[0] }}/manifests/latest",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.docker.distribution.manifest.v2+json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        0
+      ],
+      "id": "430f15d1-eaa9-4a29-b5f1-a819548abcaa",
+      "name": "Tomar versión actual de modelos"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 2,
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "10fc503d-b980-4716-964e-63c8bb118bc2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "# Workflow de verificación de updates de modelos.",
+        "height": 464,
+        "width": 1616,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "5e49ec59-70b3-4372-8647-1a9a90bb3498",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "models",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "54d50a0c-39fd-4040-b3a1-4c69254c603c",
+      "name": "Separar en distintos items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f28bf65-77a0-49be-9269-d5ef1d673e7e",
+              "name": "ollama_server_digest",
+              "value": "={{ $json.headers['ollama-content-digest'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b35ee4b4-bb5d-438e-aa4b-6558a4a5641b",
+              "name": "ollama_local_digest",
+              "value": "={{ $('Separar en distintos items').item.json.digest }}",
+              "type": "string"
+            },
+            {
+              "id": "1009bcdf-a899-4f68-b1e7-5ea066a7c026",
+              "name": "name",
+              "value": "={{ $('Separar en distintos items').item.json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        0
+      ],
+      "id": "9001d9d0-f5c7-4dc7-8702-59a916e685cf",
+      "name": "Tomar digest's y nombres"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "name",
+              "separateBy": ", "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1168,
+        96
+      ],
+      "id": "ef9ce12f-7ba7-4c32-992e-6494b1e1678e",
+      "name": "Juntar los nombres"
+    },
+    {
+      "parameters": {
+        "sendTo": "pia@unahur.edu.ar",
+        "subject": "Actualización disponible para los modelos de Ollama",
+        "message": "=<!DOCTYPE html> <html lang=\"es\"> <head>     <meta charset=\"UTF-8\">     <title>Notificación de Actualización de Modelos</title>     <style type=\"text/css\">         body {             margin: 0;             padding: 0;             font-family: Arial, sans-serif;             line-height: 1.6;         }                  .email-wrapper {             max-width: 800px;             margin: 20px auto;             padding: 20px;         }     </style> </head> <body>     <div class=\"email-wrapper\">         <h1>Notificación de Nueva Versión</h1>          <p>PIA,</p>          <p>Les informamos que los siguientes modelos tienen una nueva versión disponible:</p>          <strong>{{ $json.concatenated_name }}</strong>          <p>Para actualizarlos, por favor ejecute en el cmd de Windows:</p>          <code>docker exec -it ollama ollama pull -nombre_del_modelo-</code>          <p>Actualice todos los modelos necesarios y notifiqueme ante cualquier problema.</p>          <p>Saludos,<br>         Matías Cisnero - Miembro del PIA</p>     </div> </body> </html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        96
+      ],
+      "id": "ba37d55f-51af-4b06-a757-e9a882325513",
+      "name": "Enviar mail de notificación",
+      "webhookId": "4f6c9914-177c-4579-a65f-d4fe72293594",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qEhh8kerMNAtATU6",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Tomar modelos Ollama": {
+      "main": [
+        [
+          {
+            "node": "Separar en distintos items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar versión actual de modelos": {
+      "main": [
+        [
+          {
+            "node": "Tomar digest's y nombres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Coinciden los digest?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Juntar los nombres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Tomar modelos Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar en distintos items": {
+      "main": [
+        [
+          {
+            "node": "Tomar versión actual de modelos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tomar digest's y nombres": {
+      "main": [
+        [
+          {
+            "node": "¿Coinciden los digest?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Juntar los nombres": {
+      "main": [
+        [
+          {
+            "node": "Enviar mail de notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d87f0fdb-3c03-496b-be72-f9b051b3c263",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31d2d47e2510cbfd080db5ccade81dab10ff2771698f42e9e0bf6020f3b06c79"
+  },
+  "id": "nqso8VBrQaLQAUMe",
+  "tags": []
+}
